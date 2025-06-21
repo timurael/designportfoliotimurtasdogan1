@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Portfolio Images</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .image-generator {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        button {
+            background: #0066CC;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0052A3;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Portfolio Image Generator</h1>
+        <p>Generate placeholder images for the portfolio website.</p>
+        
+        <div class="image-generator">
+            <h3>Project Images</h3>
+            <canvas id="projectCanvas" width="400" height="300"></canvas>
+            
+            <div class="controls">
+                <select id="projectType">
+                    <option value="hadi">Hadi Fintech App</option>
+                    <option value="tom">TOM Social Media</option>
+                    <option value="coherent">Coherent Analysis</option>
+                    <option value="video">Video Production</option>
+                </select>
+                <input type="number" id="imageNumber" min="1" max="3" value="1" placeholder="Image #">
+                <button onclick="generateProjectImage()">Generate Image</button>
+                <button onclick="downloadImage('projectCanvas')">Download</button>
+            </div>
+        </div>
+        
+        <div class="image-generator">
+            <h3>Preview Images</h3>
+            <canvas id="previewCanvas" width="600" height="400"></canvas>
+            
+            <div class="controls">
+                <select id="previewType">
+                    <option value="hadi-preview">Hadi App Preview</option>
+                    <option value="tom-preview">TOM Social Preview</option>
+                    <option value="coherent-preview">Coherent Preview</option>
+                    <option value="video-preview">Video Preview</option>
+                </select>
+                <button onclick="generatePreview()">Generate Preview</button>
+                <button onclick="downloadImage('previewCanvas')">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectData = {
+            hadi: {
+                title: 'Hadi Fintech',
+                color: '#0066CC',
+                secondaryColor: '#E3F2FD',
+                icon: '💳',
+                type: 'Mobile App'
+            },
+            tom: {
+                title: 'TOM Social',
+                color: '#5E5CE6',
+                secondaryColor: '#F3E5F5',
+                icon: '📱',
+                type: 'Social Media'
+            },
+            coherent: {
+                title: 'Coherent Analysis',
+                color: '#10B981',
+                secondaryColor: '#E6FFFA',
+                icon: '📊',
+                type: 'Strategy'
+            },
+            video: {
+                title: 'Video Production',
+                color: '#F59E0B',
+                secondaryColor: '#FEF3C7',
+                icon: '🎬',
+                type: 'Motion Design'
+            }
+        };
+
+        function generateProjectImage() {
+            const canvas = document.getElementById('projectCanvas');
+            const ctx = canvas.getContext('2d');
+            const projectType = document.getElementById('projectType').value;
+            const imageNumber = document.getElementById('imageNumber').value;
+            const project = projectData[projectType];
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, project.color);
+            gradient.addColorStop(1, project.secondaryColor);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add glass morphism effect
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.fillRect(50, 50, canvas.width - 100, canvas.height - 100);
+
+            // Add border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100);
+
+            // Add icon
+            ctx.font = '48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillText(project.icon, canvas.width / 2, canvas.height / 2 - 20);
+
+            // Add text
+            ctx.font = 'bold 16px Inter, Arial';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(project.title, canvas.width / 2, canvas.height / 2 + 20);
+
+            ctx.font = '12px Inter, Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillText(project.type + ' - Image ' + imageNumber, canvas.width / 2, canvas.height / 2 + 40);
+
+            // Add geometric shapes for visual interest
+            addGeometricShapes(ctx, project.color);
+        }
+
+        function generatePreview() {
+            const canvas = document.getElementById('previewCanvas');
+            const ctx = canvas.getContext('2d');
+            const previewType = document.getElementById('previewType').value;
+            const projectKey = previewType.replace('-preview', '');
+            const project = projectData[projectKey];
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Create sophisticated gradient
+            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2);
+            gradient.addColorStop(0, project.secondaryColor);
+            gradient.addColorStop(0.6, project.color);
+            gradient.addColorStop(1, '#1a1a1a');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add glass card
+            const cardWidth = canvas.width - 100;
+            const cardHeight = canvas.height - 100;
+            const cardX = 50;
+            const cardY = 50;
+
+            // Glass effect
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.fillRect(cardX, cardY, cardWidth, cardHeight);
+
+            // Glass border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(cardX, cardY, cardWidth, cardHeight);
+
+            // Add shadow effect
+            ctx.shadowColor = 'rgba(31, 38, 135, 0.15)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 8;
+
+            // Large icon
+            ctx.font = '80px Arial';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillText(project.icon, canvas.width / 2, canvas.height / 2 - 40);
+
+            // Project title
+            ctx.font = 'bold 32px Inter, Arial';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(project.title, canvas.width / 2, canvas.height / 2 + 20);
+
+            // Project type
+            ctx.font = '18px Inter, Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillText(project.type, canvas.width / 2, canvas.height / 2 + 50);
+
+            // Add decorative elements
+            addDecorativeElements(ctx, project);
+        }
+
+        function addGeometricShapes(ctx, color) {
+            // Add some geometric shapes for visual interest
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            
+            // Circle
+            ctx.beginPath();
+            ctx.arc(100, 80, 20, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Triangle
+            ctx.beginPath();
+            ctx.moveTo(320, 60);
+            ctx.lineTo(340, 90);
+            ctx.lineTo(300, 90);
+            ctx.closePath();
+            ctx.fill();
+
+            // Rectangle
+            ctx.fillRect(80, 220, 30, 20);
+            ctx.fillRect(320, 220, 25, 25);
+        }
+
+        function addDecorativeElements(ctx, project) {
+            // Add floating elements
+            const elements = [
+                { x: 100, y: 100, size: 15, type: 'circle' },
+                { x: 500, y: 150, size: 20, type: 'square' },
+                { x: 150, y: 300, size: 18, type: 'triangle' },
+                { x: 450, y: 320, size: 12, type: 'circle' },
+            ];
+
+            elements.forEach(el => {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                
+                if (el.type === 'circle') {
+                    ctx.beginPath();
+                    ctx.arc(el.x, el.y, el.size, 0, 2 * Math.PI);
+                    ctx.fill();
+                } else if (el.type === 'square') {
+                    ctx.fillRect(el.x - el.size/2, el.y - el.size/2, el.size, el.size);
+                } else if (el.type === 'triangle') {
+                    ctx.beginPath();
+                    ctx.moveTo(el.x, el.y - el.size/2);
+                    ctx.lineTo(el.x - el.size/2, el.y + el.size/2);
+                    ctx.lineTo(el.x + el.size/2, el.y + el.size/2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            });
+        }
+
+        function downloadImage(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const link = document.createElement('a');
+            
+            if (canvasId === 'projectCanvas') {
+                const projectType = document.getElementById('projectType').value;
+                const imageNumber = document.getElementById('imageNumber').value;
+                link.download = `${projectType}-${imageNumber}.jpg`;
+            } else {
+                const previewType = document.getElementById('previewType').value;
+                link.download = `${previewType}.jpg`;
+            }
+            
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+        }
+
+        // Generate initial images
+        generateProjectImage();
+        generatePreview();
+    </script>
+</body>
+</html>

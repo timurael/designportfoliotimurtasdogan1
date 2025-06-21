@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yourportfolio.com/sitemap.xml
+
+# Block access to development files
+Disallow: /placeholder-generator.html
+Disallow: /*.txt
+Disallow: /.htaccess
